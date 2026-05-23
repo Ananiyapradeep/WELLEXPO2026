@@ -672,6 +672,27 @@ footer{background:var(--navy-mid);border-top:1px solid rgba(201,168,76,0.12);pad
         padding:0 20px;
     }
 }
+
+  /* ── REGISTRATION CHOICE MODAL ── */
+  .reg-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;padding:20px;}
+  .reg-modal-overlay.open{display:flex;}
+  .reg-modal{background:#0D1A31;border:1px solid rgba(201,168,76,0.2);border-radius:20px;padding:48px 40px;width:100%;max-width:500px;text-align:center;position:relative;}
+  .reg-modal::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:80px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+  .reg-modal-close{position:absolute;top:16px;right:20px;background:none;border:none;color:var(--text-muted);font-size:22px;cursor:pointer;line-height:1;transition:color .2s;}
+  .reg-modal-close:hover{color:var(--white);}
+  .reg-modal-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+  .reg-modal-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--white);margin-bottom:8px;}
+  .reg-modal-sub{font-size:13px;color:var(--text-muted);margin-bottom:36px;line-height:1.6;}
+  .reg-modal-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .reg-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:28px 20px;text-decoration:none;transition:all .3s;display:block;}
+  .reg-card:hover{border-color:var(--gold);background:rgba(201,168,76,0.06);transform:translateY(-3px);}
+  .reg-card-icon{font-size:32px;margin-bottom:12px;}
+  .reg-card-title{font-size:15px;font-weight:600;color:var(--white);margin-bottom:6px;}
+  .reg-card-desc{font-size:12px;color:var(--text-muted);line-height:1.5;}
+  .reg-card.exhibitor{border-color:rgba(201,168,76,0.3);}
+  .reg-card.exhibitor:hover{border-color:var(--gold);}
+  .reg-card.visitor{border-color:rgba(0,180,166,0.3);}
+  .reg-card.visitor:hover{border-color:var(--teal);}
 </style>
 </head>
 <body>
@@ -685,7 +706,7 @@ footer{background:var(--navy-mid);border-top:1px solid rgba(201,168,76,0.12);pad
   <a href="#conference" onclick="closeMobile()">Programs</a>
   <a href="#venue" onclick="closeMobile()">Venue</a>
   <a href="#company" onclick="closeMobile()">Organiser</a>
-  <a href="register.html" onclick="closeMobile()" style="color:var(--gold);">Register →</a>
+  <a href="register.html" onclick="closeMobile();openRegModal(event)" style="color:var(--gold);">Register →</a>
 </div>
 
 <!-- NAV -->
@@ -702,7 +723,7 @@ footer{background:var(--navy-mid);border-top:1px solid rgba(201,168,76,0.12);pad
     <a href="#venue">Venue</a>
     <a href="#company">Organiser</a>
   </div>
-  <a href="register.html" class="nav-cta">Register Now</a>
+  <a href="register.html" class="nav-cta" onclick="openRegModal(event)">Register Now</a>
   <div class="nav-ham" id="hamBtn" onclick="toggleMobile()">
     <span></span><span></span><span></span>
   </div>
@@ -730,11 +751,9 @@ footer{background:var(--navy-mid);border-top:1px solid rgba(201,168,76,0.12);pad
     <div class="hero-year">2026</div>
     <p class="hero-tagline">Bridging Innovation &amp; Healthcare Excellence — where Kerala's medical heritage meets the future of global health.</p>
     <div class="hero-actions">
-      <a href="#sponsorship" class="btn-gold">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-        Explore Sponsorship
-      </a>
-      <a href="register.html" class="btn-glass">Register as Visitor</a>
+      <a href="register.html" class="btn-gold">Register as Exhibitor</a>
+      <a href="visitor-register.html" class="btn-glass">Register as Visitor</a>
+      <a href="#sponsorship" class="btn-glass">Explore Sponsorship</a>
     </div>
   </div>
   <div class="hero-scroll">
@@ -900,7 +919,7 @@ footer{background:var(--navy-mid);border-top:1px solid rgba(201,168,76,0.12);pad
       <span class="sec-eyebrow" style="display:block;">Visual Showcase</span>
       <h2 class="section-heading" style="margin-top:8px;text-align:left;">The <em>Experience</em></h2>
     </div>
-    <a href="register.html" class="btn-glass" style="flex-shrink:0;">Register Now →</a>
+    <a href="register.html" class="btn-glass" style="flex-shrink:0;" onclick="openRegModal(event)">Register Now →</a>
   </div>
   <div class="gallery-grid">
     <div class="g-item"><img src="ph1.jpg" alt="Exhibition Hall"><div class="g-overlay"></div><div class="g-label">Exhibition Floor</div></div>
@@ -967,40 +986,40 @@ footer{background:var(--navy-mid);border-top:1px solid rgba(201,168,76,0.12);pad
   <div class="market-inner">
     <div class="section-header reveal">
       <span class="sec-eyebrow">Market Intelligence</span>
-      <h2 class="section-heading">Indian Exhibition <em>Market</em> Overview</h2>
+      <h2 class="section-heading">South India Healthcare <em>Exhibition</em> Overview</h2>
     </div>
     <div class="market-grid">
       <div class="mcard reveal">
-        <div class="mcard-num">$5.66<span class="gold">BN</span></div>
-        <div class="mcard-label">Market Size 2025</div>
-        <div class="mcard-body">India's exhibition industry current market value, growing at a compound annual rate of 8.31% through 2030, driven by industrial expansion and increased private sector investment in trade events.</div>
+        <div class="mcard-num">$180<span class="gold">BN</span></div>
+        <div class="mcard-label">India Healthcare Market 2024</div>
+        <div class="mcard-body">India's healthcare market reached USD 180 billion in 2024, growing at 18–20% CAGR through 2030. South India leads with a 35% share of the national market, driven by Kerala, Tamil Nadu and Karnataka's advanced healthcare infrastructure.</div>
       </div>
       <div class="mcard reveal">
-        <div class="mcard-num">$8.44<span class="gold">BN</span></div>
+        <div class="mcard-num">$372<span class="gold">BN</span></div>
         <div class="mcard-label">Projected by 2030</div>
-        <div class="mcard-body">The market is expected to reach USD 8.44 billion by 2030. 63% of marketers are increasing their live event investment, reflecting the resilience and growing importance of in-person exhibitions.</div>
+        <div class="mcard-body">India's healthcare sector is projected to more than double to USD 372 billion by 2030, fuelled by digital health at 24.4% CAGR, pharmaceutical exports reaching USD 130 billion, and rising private healthcare investment across South India.</div>
       </div>
       <div class="mcard reveal">
-        <div class="mcard-num">9.41<span class="gold">%</span></div>
-        <div class="mcard-label">CAGR — Fastest Segment</div>
-        <div class="mcard-body">The entertainment and media segment is the fastest-growing vertical at 9.41% CAGR through 2030. Healthcare and pharmaceutical exhibitions closely follow as the second-highest growth category.</div>
+        <div class="mcard-num">$14.3<span class="gold">BN</span></div>
+        <div class="mcard-label">Medical Tourism by FY29</div>
+        <div class="mcard-body">India's medical tourism market, valued at USD 7.69 billion in 2024, is projected to reach USD 14.31 billion by FY29. Kerala leads as India's top medical tourism destination, receiving over 6 lakh international patients annually.</div>
       </div>
     </div>
     <div class="drivers-row">
       <div class="driver reveal">
         <span class="driver-accent">Growth Driver 01</span>
-        <strong>Hybrid Event Adoption</strong>
-        <span>Hybrid event formats add a +1.8% CAGR uplift to the exhibition industry, enabling global participation and amplifying reach beyond physical attendance.</span>
+        <strong>Kerala & Tamil Nadu GDP Growth</strong>
+        <span>Kerala's GDP reached USD 190 billion in 2026-27 with 11% growth, while Tamil Nadu's economy stands at USD 380 billion — the 2nd largest state economy in India. Both states allocate 6.5–6.8% of their budgets to healthcare, among the highest in India.</span>
       </div>
       <div class="driver reveal">
         <span class="driver-accent">Growth Driver 02</span>
-        <strong>Government Initiatives</strong>
-        <span>Make in India and Startup India programmes are actively fuelling exhibition demand, with dedicated pavilions and government-backed matchmaking programmes at major expos.</span>
+        <strong>GCC Healthcare Corridor</strong>
+        <span>Kerala's 3.5 million NRI diaspora in the GCC drives a powerful healthcare trade corridor. NRI health insurance adoption rose 150% YoY in 2025, and GCC-based buyers actively source South Indian medical devices, pharma and wellness products at WELLEXPO.</span>
       </div>
       <div class="driver reveal">
         <span class="driver-accent">Growth Driver 03</span>
-        <strong>Tier-2 City Expansion</strong>
-        <span>Mumbai, Delhi-NCR, and Bengaluru lead exhibition hubs, while Tier-2 cities including Pune, Chennai, Hyderabad, and Kochi are growing rapidly as strategic exhibition destinations.</span>
+        <strong>Pharma &amp; Digital Health Boom</strong>
+        <span>India's pharmaceutical industry is on track to reach USD 130 billion by 2030, while digital health is growing at 24.4% CAGR. South India's strong pharma manufacturing base and IT infrastructure make it the ideal hub for healthcare innovation showcased at WELLEXPO.</span>
       </div>
     </div>
   </div>
@@ -1316,6 +1335,13 @@ footer{background:var(--navy-mid);border-top:1px solid rgba(201,168,76,0.12);pad
             <div class="team-name">Suresh Mohan</div>
             <div class="team-title">Director, Planning &amp; Marketing</div>
           </div>
+          <div class="team-member">
+            <div class="team-avatar">
+              <img src="ramaswamy.jpg" alt="Dr. L. Ramaswamy">
+            </div>
+            <div class="team-name">Dr. L. Ramaswamy</div>
+            <div class="team-title">Executive Director</div>
+          </div>
         </div>
         <div class="company-services">
           <div class="csvc">
@@ -1622,5 +1648,45 @@ document.addEventListener('click', function(e){
     </div>
 
 </div>
+
+<!-- Registration Choice Modal -->
+<div class="reg-modal-overlay" id="reg-modal-overlay" onclick="closeRegModal(event)">
+  <div class="reg-modal">
+    <button class="reg-modal-close" onclick="closeRegModalDirect()">✕</button>
+    <div class="reg-modal-eyebrow">WELLEXPO 2026</div>
+    <h2 class="reg-modal-title">How would you like to register?</h2>
+    <p class="reg-modal-sub">Choose your registration type to get started</p>
+    <div class="reg-modal-cards">
+      <a href="register.html" class="reg-card exhibitor">
+        <div class="reg-card-icon">🏢</div>
+        <div class="reg-card-title">Exhibitor</div>
+        <div class="reg-card-desc">Showcase your brand, products & services at WELLEXPO 2026</div>
+      </a>
+      <a href="visitor-register.html" class="reg-card visitor">
+        <div class="reg-card-icon">🎟️</div>
+        <div class="reg-card-title">Visitor</div>
+        <div class="reg-card-desc">Attend WELLEXPO 2026 and explore the latest in healthcare</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openRegModal(e) {
+    if(e) e.preventDefault();
+    document.getElementById('reg-modal-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeRegModal(e) {
+    if(e.target === document.getElementById('reg-modal-overlay')) closeRegModalDirect();
+  }
+  function closeRegModalDirect() {
+    document.getElementById('reg-modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', function(e) {
+    if(e.key === 'Escape') closeRegModalDirect();
+  });
+</script>
 </body>
 </html>

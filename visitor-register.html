@@ -15,34 +15,39 @@
   *{margin:0;padding:0;box-sizing:border-box;}
   body{font-family:'Outfit',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
 
-  /* NAV */
   nav{padding:20px 72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
   .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;color:var(--white);text-decoration:none;}
   .nav-logo span{color:var(--gold);}
   .nav-back{font-size:12px;color:var(--text-muted);text-decoration:none;letter-spacing:1px;transition:color .3s;}
   .nav-back:hover{color:var(--gold);}
 
-  /* HERO */
   .page-hero{padding:60px 72px 40px;text-align:center;}
   .eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
   .page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,56px);font-weight:300;line-height:1.1;margin-bottom:16px;}
   .page-title em{font-style:italic;color:var(--gold);}
   .page-sub{font-size:15px;color:var(--text-muted);max-width:500px;margin:0 auto;}
 
-  /* FORM */
-  .form-wrap{max-width:760px;margin:0 auto;padding:0 72px 80px;}
+  .form-wrap{max-width:860px;margin:0 auto;padding:0 72px 80px;}
   .form-section{background:var(--navy-mid);border:1px solid var(--border);border-radius:16px;padding:40px;margin-bottom:24px;}
   .form-section-title{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:28px;padding-bottom:12px;border-bottom:1px solid var(--border);}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+  .form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
   .form-group{display:flex;flex-direction:column;gap:8px;}
   .form-group.full{grid-column:1/-1;}
+  .form-group.span2{grid-column:span 2;}
   label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);}
-  input,select,textarea{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:13px 16px;color:var(--white);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .2s;width:100%;}
+  input[type="text"],input[type="email"],input[type="tel"],input[type="date"],select,textarea{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:13px 16px;color:var(--white);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .2s;width:100%;}
   input:focus,select:focus,textarea:focus{border-color:var(--gold);}
   input::placeholder,textarea::placeholder{color:var(--text-muted);}
   select option{background:var(--navy-mid);color:var(--white);}
-  textarea{resize:vertical;min-height:100px;}
 
+  /* Radio group */
+  .radio-group{display:flex;gap:20px;flex-wrap:wrap;margin-top:4px;}
+  .radio-item{display:flex;align-items:center;gap:8px;cursor:pointer;}
+  .radio-item input[type="radio"]{width:16px;height:16px;accent-color:var(--gold);cursor:pointer;}
+  .radio-item span{font-size:13px;color:var(--white);}
+
+  /* Checkbox */
   .checkbox-group{display:flex;align-items:flex-start;gap:12px;margin-top:8px;}
   .checkbox-group input[type="checkbox"]{width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:var(--gold);}
   .checkbox-group label{font-size:13px;text-transform:none;letter-spacing:0;color:var(--text-muted);line-height:1.5;}
@@ -50,15 +55,12 @@
   .btn-submit{width:100%;padding:18px;background:var(--gold);border:none;border-radius:8px;color:var(--navy);font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-top:8px;}
   .btn-submit:hover{background:var(--gold-light);transform:translateY(-2px);}
 
-  .success-msg{display:none;background:rgba(0,180,166,0.1);border:1px solid rgba(0,180,166,0.3);border-radius:12px;padding:28px;text-align:center;margin-top:24px;}
-  .success-msg h3{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--teal);margin-bottom:8px;}
-  .success-msg p{color:var(--text-muted);font-size:14px;}
-
   .error-msg{display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:14px;text-align:center;color:#ef4444;font-size:13px;margin-top:16px;}
 
   @media(max-width:768px){
-    nav,,.page-hero,.form-wrap{padding-left:24px;padding-right:24px;}
-    .form-grid{grid-template-columns:1fr;}
+    nav,.page-hero,.form-wrap{padding-left:24px;padding-right:24px;}
+    .form-grid,.form-grid-2{grid-template-columns:1fr;}
+    .form-group.span2{grid-column:span 1;}
   }
 </style>
 </head>
@@ -78,19 +80,26 @@
 <div class="form-wrap">
   <form id="visitor-form">
 
+    <!-- Personal Information -->
     <div class="form-section">
       <div class="form-section-title">Personal Information</div>
       <div class="form-grid">
-        <div class="form-group">
+        <div class="form-group span2">
           <label>Full Name *</label>
           <input type="text" name="full_name" placeholder="Your full name" required>
         </div>
         <div class="form-group">
-          <label>Email Address *</label>
-          <input type="email" name="email" placeholder="your@email.com" required>
+          <label>Gender</label>
+          <div class="radio-group" style="margin-top:12px">
+            <label class="radio-item"><input type="radio" name="gender" value="Male"><span>Male</span></label>
+            <label class="radio-item"><input type="radio" name="gender" value="Female"><span>Female</span></label>
+            <label class="radio-item"><input type="radio" name="gender" value="Prefer not to say"><span>Prefer not to say</span></label>
+          </div>
         </div>
+      </div>
+      <div class="form-grid" style="margin-top:20px">
         <div class="form-group">
-          <label>Phone Number *</label>
+          <label>Mobile Number *</label>
           <input type="tel" name="phone" placeholder="+91 XXXXX XXXXX" required>
         </div>
         <div class="form-group">
@@ -98,29 +107,34 @@
           <input type="tel" name="whatsapp" placeholder="+91 XXXXX XXXXX">
         </div>
         <div class="form-group">
+          <label>Email Address *</label>
+          <input type="email" name="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
           <label>Country *</label>
           <input type="text" name="country" placeholder="India" required>
         </div>
         <div class="form-group">
-          <label>City</label>
+          <label>State / City</label>
           <input type="text" name="city" placeholder="Your city">
         </div>
       </div>
     </div>
 
+    <!-- Professional Details -->
     <div class="form-section">
       <div class="form-section-title">Professional Details</div>
       <div class="form-grid">
         <div class="form-group">
-          <label>Job Title</label>
-          <input type="text" name="job_title" placeholder="e.g. Doctor, Manager">
-        </div>
-        <div class="form-group">
-          <label>Organisation / Hospital</label>
+          <label>Company / Organisation Name</label>
           <input type="text" name="organisation" placeholder="Your organisation">
         </div>
         <div class="form-group">
-          <label>Industry Sector</label>
+          <label>Designation</label>
+          <input type="text" name="designation" placeholder="e.g. Doctor, Manager">
+        </div>
+        <div class="form-group">
+          <label>Industry / Sector</label>
           <select name="industry_sector">
             <option value="">Select sector</option>
             <option>Pharmaceuticals</option>
@@ -139,7 +153,35 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Days Attending</label>
+          <label>Department</label>
+          <input type="text" name="department" placeholder="e.g. Sales, Operations">
+        </div>
+        <div class="form-group">
+          <label>Company Website</label>
+          <input type="text" name="company_website" placeholder="www.yourcompany.com">
+        </div>
+        <div class="form-group">
+          <label>Purpose of Visit</label>
+          <select name="purpose_of_visit">
+            <option value="">Select purpose</option>
+            <option>Business Partnership</option>
+            <option>Product Sourcing</option>
+            <option>Networking</option>
+            <option>Knowledge & Learning</option>
+            <option>Investment Opportunity</option>
+            <option>General Interest</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visiting Details -->
+    <div class="form-section">
+      <div class="form-section-title">Visiting Details</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Date of Visit</label>
           <select name="days_attending">
             <option value="">Select days</option>
             <option>October 7 only</option>
@@ -150,33 +192,77 @@
             <option>All 3 days (Oct 7, 8 & 9)</option>
           </select>
         </div>
-        <div class="form-group full">
-          <label>Areas of Interest</label>
-          <input type="text" name="interests" placeholder="e.g. Medical devices, Digital health, Ayurveda">
+        <div class="form-group">
+          <label>Visitor Type</label>
+          <select name="visitor_type">
+            <option value="">Select type</option>
+            <option>Business Visitor</option>
+            <option>Trade Visitor</option>
+            <option>Healthcare Professional</option>
+            <option>Student</option>
+            <option>Media / Press</option>
+            <option>General Public</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Interested in B2B Meetings?</label>
+          <div class="radio-group" style="margin-top:12px">
+            <label class="radio-item"><input type="radio" name="b2b_meetings" value="Yes"><span>Yes</span></label>
+            <label class="radio-item"><input type="radio" name="b2b_meetings" value="No"><span>No</span></label>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Additional Information -->
     <div class="form-section">
-      <div class="form-section-title">Consent</div>
+      <div class="form-section-title">Additional Information</div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label>How did you hear about the event?</label>
+          <select name="hear_about">
+            <option value="">Select</option>
+            <option>LinkedIn</option>
+            <option>Facebook</option>
+            <option>Instagram</option>
+            <option>WhatsApp</option>
+            <option>Email</option>
+            <option>Friend / Colleague</option>
+            <option>News / Media</option>
+            <option>Previous Expo</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Interested in Future Events?</label>
+          <div class="radio-group" style="margin-top:12px">
+            <label class="radio-item"><input type="radio" name="future_events" value="Yes"><span>Yes</span></label>
+            <label class="radio-item"><input type="radio" name="future_events" value="No"><span>No</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consent -->
+    <div class="form-section">
+      <div class="form-section-title">Consent & Permissions</div>
       <div class="checkbox-group">
         <input type="checkbox" name="terms" id="terms" required>
-        <label for="terms">I agree to the terms and conditions of WELLEXPO 2026 and consent to my details being used for event communication.</label>
+        <label for="terms">I agree to the Terms & Privacy Policy of WELLEXPO 2026.</label>
       </div>
       <div class="checkbox-group" style="margin-top:16px">
-        <input type="checkbox" name="marketing" id="marketing">
-        <label for="marketing">I agree to receive updates, news and promotional content from WELLEXPO 2026.</label>
+        <input type="checkbox" name="consent_updates" id="consent_updates">
+        <label for="consent_updates">Consent for receiving event updates.</label>
+      </div>
+      <div class="checkbox-group" style="margin-top:16px">
+        <input type="checkbox" name="consent_exhibitors" id="consent_exhibitors">
+        <label for="consent_exhibitors">Consent for sharing details with exhibitors.</label>
       </div>
     </div>
 
     <button type="submit" class="btn-submit">Complete Registration →</button>
     <div class="error-msg" id="error-msg"></div>
   </form>
-
-  <div class="success-msg" id="success-msg">
-    <h3>Registration Successful!</h3>
-    <p>Thank you for registering for WELLEXPO 2026.<br>We look forward to seeing you on October 7, 8 & 9 at KINFRA Exhibition Centre, Kochi.</p>
-  </div>
 </div>
 
 <script>
@@ -196,8 +282,11 @@ document.getElementById('visitor-form').addEventListener('submit', async functio
     const data = await res.json();
 
     if (data.success) {
-      document.getElementById('visitor-form').style.display = 'none';
-      document.getElementById('success-msg').style.display = 'block';
+      if (data.ticket_url) {
+        window.location.href = data.ticket_url;
+      } else {
+        alert('Registration successful! Thank you.');
+      }
     } else {
       document.getElementById('error-msg').style.display = 'block';
       document.getElementById('error-msg').textContent = data.message || 'Something went wrong. Please try again.';

@@ -107,6 +107,11 @@ def static_files(filename):
 
 # ── DATABASE ROUTES ───────────────────────────────────────────
 
+
+@app.route("/ticket.html")
+def ticket():
+    return send_from_directory(".", "ticket.html")
+
 @app.route("/submit", methods=["POST"])
 def submit():
     try:
@@ -206,10 +211,20 @@ def submit():
 
         conn.commit()
 
+        # Build ticket URL
+        from urllib.parse import quote
+        contact_name = quote(data.get("contact_person_name", ""))
+        company_name = quote(data.get("company_name", ""))
+        email_addr   = quote(data.get("email_address", ""))
+        phone_num    = quote(data.get("phone_number", ""))
+        country_val  = quote(data.get("country", ""))
+        ticket_url = f"/ticket.html?type=exhibitor&id={reg_id}&name={contact_name}&company={company_name}&email={email_addr}&phone={phone_num}&country={country_val}"
+
         return jsonify({
             "success": True,
             "message": "Registration submitted successfully!",
             "registration_id": reg_id,
+            "ticket_url": ticket_url,
         })
 
     except Exception as e:
@@ -309,32 +324,51 @@ def visitor_submit():
         cur.execute("""
             CREATE TABLE IF NOT EXISTS visitor_registrations (
                 id SERIAL PRIMARY KEY,
-                full_name TEXT, email TEXT, phone TEXT, whatsapp TEXT,
-                country TEXT, city TEXT, job_title TEXT, organisation TEXT,
-                industry_sector TEXT, days_attending TEXT, interests TEXT,
-                terms TEXT, marketing TEXT,
+                full_name TEXT, gender TEXT, email TEXT, phone TEXT, whatsapp TEXT,
+                country TEXT, city TEXT, organisation TEXT, designation TEXT,
+                department TEXT, company_website TEXT, industry_sector TEXT,
+                purpose_of_visit TEXT, days_attending TEXT, visitor_type TEXT,
+                b2b_meetings TEXT, hear_about TEXT, future_events TEXT,
+                terms TEXT, consent_updates TEXT, consent_exhibitors TEXT,
                 status TEXT DEFAULT 'registered',
                 created_at TEXT
             )
         """)
         cur.execute("""
             INSERT INTO visitor_registrations
-              (full_name, email, phone, whatsapp, country, city,
-               job_title, organisation, industry_sector, days_attending,
-               interests, terms, marketing, created_at)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+              (full_name, gender, email, phone, whatsapp, country, city,
+               organisation, designation, department, company_website,
+               industry_sector, purpose_of_visit, days_attending,
+               visitor_type, b2b_meetings, hear_about, future_events,
+               terms, consent_updates, consent_exhibitors, created_at)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
         """, (
-            data.get("full_name",""), data.get("email",""),
-            data.get("phone",""), data.get("whatsapp",""),
-            data.get("country",""), data.get("city",""),
-            data.get("job_title",""), data.get("organisation",""),
-            data.get("industry_sector",""), data.get("days_attending",""),
-            data.get("interests",""), data.get("terms",""),
-            data.get("marketing",""), ts
+            data.get("full_name",""), data.get("gender",""),
+            data.get("email",""), data.get("phone",""),
+            data.get("whatsapp",""), data.get("country",""),
+            data.get("city",""), data.get("organisation",""),
+            data.get("designation",""), data.get("department",""),
+            data.get("company_website",""), data.get("industry_sector",""),
+            data.get("purpose_of_visit",""), data.get("days_attending",""),
+            data.get("visitor_type",""), data.get("b2b_meetings",""),
+            data.get("hear_about",""), data.get("future_events",""),
+            data.get("terms",""), data.get("consent_updates",""),
+            data.get("consent_exhibitors",""), ts
         ))
         conn.commit()
         cur.close()
-        return jsonify({"success": True, "message": "Visitor registration successful!"})
+        # Get visitor id
+        rows = fetch_all(conn, "SELECT id FROM visitor_registrations ORDER BY id DESC LIMIT 1")
+        vis_id = rows[0]["id"] if rows else 1
+        vis_name    = data.get("full_name", "")
+        vis_email   = data.get("email", "")
+        vis_phone   = data.get("phone", "")
+        vis_country = data.get("country", "")
+        vis_org     = data.get("organisation", "")
+        from urllib.parse import quote
+        ticket_url  = f"/ticket.html?type=visitor&id={vis_id}&name={quote(vis_name)}&company={quote(vis_org)}&email={quote(vis_email)}&phone={quote(vis_phone)}&country={quote(vis_country)}"
+
+        return jsonify({"success": True, "message": "Visitor registration successful!", "ticket_url": ticket_url})
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
 

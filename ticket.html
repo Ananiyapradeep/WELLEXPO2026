@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your WELLEXPO 2026 Ticket</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --navy:#060E1E;--navy-mid:#0D1A31;--navy-light:#162240;
+    --gold:#C9A84C;--gold-light:#E8C97A;--teal:#00B4A6;
+    --white:#F5F0E8;--text-muted:#8892A4;
+    --border:rgba(201,168,76,0.2);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Outfit',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;}
+
+  .success-header{text-align:center;margin-bottom:40px;}
+  .success-icon{width:64px;height:64px;background:rgba(0,180,166,0.15);border:2px solid var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;}
+  .success-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;margin-bottom:8px;}
+  .success-sub{font-size:14px;color:var(--text-muted);}
+
+  /* TICKET */
+  .ticket{width:100%;max-width:560px;background:var(--navy-mid);border-radius:20px;overflow:hidden;position:relative;box-shadow:0 40px 80px rgba(0,0,0,0.5);}
+
+  .ticket-top{background:linear-gradient(135deg,#0D1A31 0%,#162240 100%);padding:32px;border-bottom:2px dashed rgba(201,168,76,0.2);position:relative;}
+  .ticket-top::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--gold),var(--teal));}
+
+  .ticket-logo{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+  .ticket-brand{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;}
+  .ticket-brand span{color:var(--gold);}
+  .ticket-type-badge{padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+  .ticket-type-badge.visitor{background:rgba(0,180,166,0.15);border:1px solid var(--teal);color:var(--teal);}
+  .ticket-type-badge.exhibitor{background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold);}
+
+  .ticket-name{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;margin-bottom:4px;}
+  .ticket-company{font-size:14px;color:var(--text-muted);}
+
+  .ticket-middle{padding:24px 32px;display:grid;grid-template-columns:1fr 1fr;gap:20px;border-bottom:2px dashed rgba(201,168,76,0.2);}
+  .ticket-field label{display:block;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;}
+  .ticket-field p{font-size:14px;font-weight:500;color:var(--white);}
+  .ticket-field p.gold{color:var(--gold);font-weight:700;font-size:16px;letter-spacing:1px;}
+
+  .ticket-bottom{padding:24px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;}
+  .ticket-qr{flex-shrink:0;}
+  .ticket-qr #qrcode canvas,
+  .ticket-qr #qrcode img{border-radius:8px;}
+  .ticket-info{flex:1;}
+  .ticket-event-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:var(--gold);margin-bottom:8px;}
+  .ticket-event-detail{font-size:12px;color:var(--text-muted);line-height:1.8;}
+  .ticket-event-detail strong{color:var(--white);}
+
+  .ticket-footer{background:rgba(201,168,76,0.05);padding:12px 32px;display:flex;align-items:center;justify-content:space-between;}
+  .ticket-footer-id{font-size:11px;color:var(--text-muted);letter-spacing:1px;}
+  .ticket-footer-valid{font-size:11px;color:var(--teal);}
+
+  /* ACTIONS */
+  .ticket-actions{display:flex;gap:12px;margin-top:24px;width:100%;max-width:560px;}
+  .btn-download{flex:1;padding:14px;background:var(--gold);border:none;border-radius:8px;color:var(--navy);font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .3s;}
+  .btn-download:hover{background:var(--gold-light);}
+  .btn-print{flex:1;padding:14px;background:none;border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .3s;}
+  .btn-print:hover{border-color:var(--gold);color:var(--gold);}
+  .btn-home{flex:1;padding:14px;background:none;border:1px solid rgba(0,180,166,0.3);border-radius:8px;color:var(--teal);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .3s;text-decoration:none;display:flex;align-items:center;justify-content:center;}
+  .btn-home:hover{border-color:var(--teal);background:rgba(0,180,166,0.05);}
+
+  .note{margin-top:16px;font-size:12px;color:var(--text-muted);text-align:center;max-width:560px;line-height:1.6;}
+
+  /* Print styles */
+  @media print {
+    body{background:white;padding:0;}
+    .ticket{box-shadow:none;border:2px solid #ccc;}
+    .ticket-top{background:#0D1A31 !important;-webkit-print-color-adjust:exact;}
+    .ticket-actions,.success-header,.note{display:none;}
+  }
+
+  @media(max-width:480px){
+    .ticket-middle{grid-template-columns:1fr;}
+    .ticket-bottom{flex-direction:column;text-align:center;}
+    .ticket-actions{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<div class="success-header">
+  <div class="success-icon">✓</div>
+  <h1 class="success-title">Registration Confirmed!</h1>
+  <p class="success-sub">Save or print your ticket below to gain entry at WELLEXPO 2026</p>
+</div>
+
+<div class="ticket" id="ticket">
+  <div class="ticket-top">
+    <div class="ticket-logo">
+      <div class="ticket-brand">WELL<span>EXPO</span></div>
+      <div class="ticket-type-badge" id="ticket-type-badge">Visitor</div>
+    </div>
+    <div class="ticket-name" id="ticket-name">—</div>
+    <div class="ticket-company" id="ticket-company">—</div>
+  </div>
+
+  <div class="ticket-middle">
+    <div class="ticket-field">
+      <label>Registration ID</label>
+      <p class="gold" id="ticket-id">—</p>
+    </div>
+    <div class="ticket-field">
+      <label>Registration Type</label>
+      <p id="ticket-type-text">—</p>
+    </div>
+    <div class="ticket-field">
+      <label>Email</label>
+      <p id="ticket-email">—</p>
+    </div>
+    <div class="ticket-field">
+      <label>Phone</label>
+      <p id="ticket-phone">—</p>
+    </div>
+    <div class="ticket-field">
+      <label>Country</label>
+      <p id="ticket-country">—</p>
+    </div>
+    <div class="ticket-field">
+      <label>Registered On</label>
+      <p id="ticket-date">—</p>
+    </div>
+  </div>
+
+  <div class="ticket-bottom">
+    <div class="ticket-qr">
+      <div id="qrcode"></div>
+    </div>
+    <div class="ticket-info">
+      <div class="ticket-event-name">WellExpo Kerala 2026</div>
+      <div class="ticket-event-detail">
+        <strong>October 7, 8 & 9, 2026</strong><br>
+        KINFRA Exhibition Centre<br>
+        Kochi, Kerala, India<br><br>
+        <strong>Present this ticket at entry</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="ticket-footer">
+    <div class="ticket-footer-id" id="ticket-footer-id">ID: —</div>
+    <div class="ticket-footer-valid">✓ Valid Entry Pass</div>
+  </div>
+</div>
+
+<div class="ticket-actions">
+  <button class="btn-download" onclick="downloadTicket()">⬇ Download</button>
+  <button class="btn-print" onclick="window.print()">🖨 Print</button>
+  <a href="/" class="btn-home">← Back to Home</a>
+</div>
+
+<p class="note">
+  Please present this ticket (printed or on your phone) at the registration counter on the day of the event.<br>
+  For support: <strong>exhibitors@keralamedicalexpo.com</strong>
+</p>
+
+<script>
+  // Get data from URL params
+  const params = new URLSearchParams(window.location.search);
+  const type    = params.get('type') || 'visitor';
+  const id      = params.get('id')   || '—';
+  const name    = params.get('name') || '—';
+  const company = params.get('company') || '';
+  const email   = params.get('email') || '—';
+  const phone   = params.get('phone') || '—';
+  const country = params.get('country') || '—';
+
+  // Format registration ID
+  const prefix   = type === 'exhibitor' ? 'EXH' : 'VIS';
+  const regId    = prefix + '-' + String(id).padStart(4, '0');
+  const today    = new Date().toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
+
+  // Fill ticket
+  document.getElementById('ticket-name').textContent       = name;
+  document.getElementById('ticket-company').textContent    = company || (type === 'visitor' ? 'Visitor' : 'Exhibitor');
+  document.getElementById('ticket-id').textContent         = regId;
+  document.getElementById('ticket-type-text').textContent  = type === 'exhibitor' ? 'Exhibitor' : 'Visitor';
+  document.getElementById('ticket-email').textContent      = email;
+  document.getElementById('ticket-phone').textContent      = phone;
+  document.getElementById('ticket-country').textContent    = country;
+  document.getElementById('ticket-date').textContent       = today;
+  document.getElementById('ticket-footer-id').textContent  = 'ID: ' + regId;
+
+  // Badge color
+  const badge = document.getElementById('ticket-type-badge');
+  badge.textContent = type === 'exhibitor' ? 'Exhibitor' : 'Visitor';
+  badge.className   = 'ticket-type-badge ' + type;
+
+  // QR Code
+  new QRCode(document.getElementById('qrcode'), {
+    text: `WELLEXPO2026|${regId}|${name}|${type}|${email}`,
+    width: 100,
+    height: 100,
+    colorDark: '#ffffff',
+    colorLight: '#0D1A31',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  // Download ticket as image
+  function downloadTicket() {
+    // Use print as fallback for download
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html><head><title>WELLEXPO 2026 Ticket - ${regId}</title>
+      <style>
+        body{margin:0;padding:20px;background:#060E1E;display:flex;justify-content:center;}
+      </style></head>
+      <body onload="window.print();window.close()">
+        ${document.getElementById('ticket').outerHTML}
+      </body></html>
+    `);
+    printWindow.document.close();
+  }
+</script>
+</body>
+</html>
