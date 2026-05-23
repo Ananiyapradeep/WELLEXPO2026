@@ -449,9 +449,17 @@
 </head>
 <body>
 
+<script>
+  // Auth check — redirect to login if not authenticated
+  if (sessionStorage.getItem('wellexpo_admin') !== 'true') {
+    window.location.href = '/login.html';
+  }
+</script>
+
 <header>
   <div class="logo">WellExpo <span>2026</span> — Admin</div>
   <div class="header-right">
+    <button onclick="logout()" style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--muted);padding:6px 16px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;margin-right:12px;transition:all 0.2s" onmouseover="this.style.borderColor='#ef4444';this.style.color='#ef4444'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='var(--muted)'">Logout</button>
     <div class="live-badge">
       <div class="live-dot"></div>
       Live
@@ -777,6 +785,12 @@
     searchQuery = e.target.value;
     renderTable();
   });
+
+  // ── LOGOUT ──
+  function logout() {
+    sessionStorage.removeItem('wellexpo_admin');
+    window.location.href = '/login.html';
+  }
 
   // ── INIT ──
   loadRegistrations();
