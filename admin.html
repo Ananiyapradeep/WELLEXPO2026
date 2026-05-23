@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WellExpo 2026 — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-mid: #112240;
+    --teal: #00b4a6;
+    --teal-light: #00d4c4;
+    --gold: #e8b84b;
+    --white: #f8f9fa;
+    --muted: #8892a4;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --border: rgba(255,255,255,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy-mid);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--teal);
+    letter-spacing: 0.5px;
+  }
+
+  .logo span { color: var(--gold); }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  .live-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── MAIN ── */
+  main { padding: 32px; max-width: 1400px; margin: 0 auto; }
+
+  /* ── STATS ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .stat-card.total::before  { background: var(--teal); }
+  .stat-card.pending::before { background: var(--amber); }
+  .stat-card.approved::before { background: var(--green); }
+  .stat-card.rejected::before { background: var(--red); }
+
+  .stat-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 40px;
+    line-height: 1;
+  }
+
+  .stat-card.total .stat-value  { color: var(--teal); }
+  .stat-card.pending .stat-value { color: var(--amber); }
+  .stat-card.approved .stat-value { color: var(--green); }
+  .stat-card.rejected .stat-value { color: var(--red); }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 16px;
+    gap: 10px;
+    flex: 1;
+    max-width: 360px;
+  }
+
+  .search-box svg { color: var(--muted); flex-shrink: 0; }
+
+  .search-box input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    padding: 12px 0;
+    width: 100%;
+  }
+
+  .search-box input::placeholder { color: var(--muted); }
+
+  .filter-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px;
+  }
+
+  .filter-tab {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-tab.active {
+    background: var(--teal);
+    color: var(--navy);
+  }
+
+  .btn-export {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: none;
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-export:hover { background: var(--teal); color: var(--navy); }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    padding: 14px 20px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(0,180,166,0.05); }
+
+  td {
+    padding: 16px 20px;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+
+  .company-cell { font-weight: 500; }
+  .company-brand { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .status-badge.pending  { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .status-badge.approved { background: rgba(34,197,94,0.15);  color: var(--green); }
+  .status-badge.rejected { background: rgba(239,68,68,0.15);  color: var(--red); }
+
+  .country-flag { font-size: 18px; }
+
+  .action-btns {
+    display: flex;
+    gap: 6px;
+  }
+
+  .btn-approve, .btn-reject {
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-approve {
+    background: rgba(34,197,94,0.15);
+    color: var(--green);
+    border: 1px solid rgba(34,197,94,0.3);
+  }
+
+  .btn-approve:hover { background: var(--green); color: var(--navy); }
+
+  .btn-reject {
+    background: rgba(239,68,68,0.1);
+    color: var(--red);
+    border: 1px solid rgba(239,68,68,0.3);
+  }
+
+  .btn-reject:hover { background: var(--red); color: white; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--muted);
+  }
+
+  .empty-state svg { margin-bottom: 16px; opacity: 0.3; }
+  .empty-state h3 { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--white); margin-bottom: 8px; }
+
+  /* ── LOADING ── */
+  .loading {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--muted);
+  }
+
+  .spinner {
+    width: 32px; height: 32px;
+    border: 2px solid var(--border);
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 640px;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--teal);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover { color: var(--white); }
+
+  .modal-body { padding: 28px; }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .detail-item label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+  }
+
+  .detail-item p {
+    font-size: 14px;
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  .detail-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 24px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 300;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-color: var(--green); color: var(--green); }
+  .toast.error   { border-color: var(--red);   color: var(--red); }
+
+  @media (max-width: 768px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    main { padding: 16px; }
+    .detail-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">WellExpo <span>2026</span> — Admin</div>
+  <div class="header-right">
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      Live
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card total">
+      <div class="stat-label">Total Registrations</div>
+      <div class="stat-value" id="stat-total">—</div>
+    </div>
+    <div class="stat-card pending">
+      <div class="stat-label">Pending Review</div>
+      <div class="stat-value" id="stat-pending">—</div>
+    </div>
+    <div class="stat-card approved">
+      <div class="stat-label">Approved</div>
+      <div class="stat-value" id="stat-approved">—</div>
+    </div>
+    <div class="stat-card rejected">
+      <div class="stat-label">Rejected</div>
+      <div class="stat-value" id="stat-rejected">—</div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-box">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" id="search-input" placeholder="Search company, email, country…">
+    </div>
+
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="pending">Pending</button>
+      <button class="filter-tab" data-filter="approved">Approved</button>
+      <button class="filter-tab" data-filter="rejected">Rejected</button>
+    </div>
+
+    <button class="btn-export" onclick="exportCSV()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Export CSV
+    </button>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <div class="loading" id="loading-state">
+      <div class="spinner"></div>
+      <p>Loading registrations…</p>
+    </div>
+
+    <table id="reg-table" style="display:none">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Company</th>
+          <th>Contact</th>
+          <th>Country</th>
+          <th>Booth</th>
+          <th>Sector</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="reg-tbody"></tbody>
+    </table>
+
+    <div class="empty-state" id="empty-state" style="display:none">
+      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/>
+      </svg>
+      <h3>No registrations found</h3>
+      <p>Submissions from the registration form will appear here.</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-title">Registration Details</h2>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  let allData = [];
+  let currentFilter = 'all';
+  let searchQuery = '';
+
+  // ── FETCH DATA ──
+  async function loadRegistrations() {
+    try {
+      const res = await fetch('/registrations');
+      allData = await res.json();
+      updateStats();
+      renderTable();
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('reg-table').style.display = 'table';
+    } catch (e) {
+      document.getElementById('loading-state').innerHTML = '<p style="color:#ef4444">Failed to load. Is the server running?</p>';
+    }
+  }
+
+  // ── STATS ──
+  function updateStats() {
+    document.getElementById('stat-total').textContent    = allData.length;
+    document.getElementById('stat-pending').textContent  = allData.filter(r => r.status === 'pending').length;
+    document.getElementById('stat-approved').textContent = allData.filter(r => r.status === 'approved').length;
+    document.getElementById('stat-rejected').textContent = allData.filter(r => r.status === 'rejected').length;
+  }
+
+  // ── RENDER TABLE ──
+  function renderTable() {
+    let data = allData;
+
+    if (currentFilter !== 'all') {
+      data = data.filter(r => r.status === currentFilter);
+    }
+
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      data = data.filter(r =>
+        (r.company_name || '').toLowerCase().includes(q) ||
+        (r.email_address || '').toLowerCase().includes(q) ||
+        (r.country || '').toLowerCase().includes(q) ||
+        (r.contact_person_name || '').toLowerCase().includes(q)
+      );
+    }
+
+    const tbody = document.getElementById('reg-tbody');
+    const empty = document.getElementById('empty-state');
+    const table = document.getElementById('reg-table');
+
+    if (data.length === 0) {
+      table.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+
+    table.style.display = 'table';
+    empty.style.display = 'none';
+
+    tbody.innerHTML = data.map(r => `
+      <tr onclick="openModal(${r.id})">
+        <td style="color:var(--muted);font-size:12px">#${r.id}</td>
+        <td>
+          <div class="company-cell">${r.company_name || '—'}</div>
+          <div class="company-brand">${r.brand_name || ''}</div>
+        </td>
+        <td>
+          <div>${r.contact_person_name || '—'}</div>
+          <div style="font-size:12px;color:var(--muted)">${r.email_address || ''}</div>
+        </td>
+        <td>${r.country || '—'}</td>
+        <td style="font-size:13px">${r.booth_type_raw || '—'}<br><span style="color:var(--muted);font-size:12px">${r.booth_size || ''}</span></td>
+        <td style="font-size:13px;color:var(--muted)">${r.industry_sector_raw || '—'}</td>
+        <td><span class="status-badge ${r.status}">${r.status}</span></td>
+        <td style="font-size:12px;color:var(--muted)">${formatDate(r.created_at)}</td>
+        <td onclick="event.stopPropagation()">
+          <div class="action-btns">
+            <button class="btn-approve" onclick="updateStatus(${r.id}, 'approved')">Approve</button>
+            <button class="btn-reject"  onclick="updateStatus(${r.id}, 'rejected')">Reject</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // ── FORMAT DATE ──
+  function formatDate(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  // ── MODAL ──
+  function openModal(id) {
+    const r = allData.find(x => x.id === id);
+    if (!r) return;
+
+    document.getElementById('modal-title').textContent = r.company_name || 'Registration Details';
+
+    document.getElementById('modal-body').innerHTML = `
+      <div class="detail-section-title">Company Information</div>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Company Name</label><p>${r.company_name || '—'}</p></div>
+        <div class="detail-item"><label>Brand Name</label><p>${r.brand_name || '—'}</p></div>
+        <div class="detail-item"><label>Website</label><p>${r.company_website || '—'}</p></div>
+        <div class="detail-item"><label>Industry</label><p>${r.industry_sector_raw || '—'}</p></div>
+        <div class="detail-item"><label>Year Established</label><p>${r.year_established || '—'}</p></div>
+        <div class="detail-item"><label>Target Market</label><p>${r.target_market || '—'}</p></div>
+      </div>
+
+      <div class="detail-section-title">Contact Information</div>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Contact Person</label><p>${r.contact_person_name || '—'}</p></div>
+        <div class="detail-item"><label>Email</label><p>${r.email_address || '—'}</p></div>
+        <div class="detail-item"><label>Phone</label><p>${r.phone_number || '—'}</p></div>
+        <div class="detail-item"><label>WhatsApp</label><p>${r.whatsapp_number || '—'}</p></div>
+        <div class="detail-item"><label>Country</label><p>${r.country || '—'}</p></div>
+        <div class="detail-item"><label>City</label><p>${r.city || '—'}</p></div>
+      </div>
+
+      <div class="detail-section-title">Booth & Exhibition</div>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Booth Type</label><p>${r.booth_type_raw || '—'}</p></div>
+        <div class="detail-item"><label>Booth Size</label><p>${r.booth_size || '—'}</p></div>
+        <div class="detail-item"><label>Staff Count</label><p>${r.number_of_booth_staff || '—'}</p></div>
+        <div class="detail-item"><label>Product Category</label><p>${r.product_service_category || '—'}</p></div>
+        <div class="detail-item"><label>Power Required</label><p>${r.power_requirement || '—'}</p></div>
+        <div class="detail-item"><label>Internet Required</label><p>${r.internet_requirement || '—'}</p></div>
+      </div>
+
+      <div class="detail-section-title">Interests</div>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Sponsorship</label><p>${r.interested_sponsorship || '—'}</p></div>
+        <div class="detail-item"><label>Speaking</label><p>${r.interested_speaking || '—'}</p></div>
+        <div class="detail-item"><label>Product Launch</label><p>${r.interested_product_launch || '—'}</p></div>
+        <div class="detail-item"><label>Previous Experience</label><p>${r.previous_exhibition_experience || '—'}</p></div>
+      </div>
+
+      ${r.special_requirements ? `
+        <div class="detail-section-title">Special Requirements</div>
+        <p style="font-size:14px;line-height:1.6">${r.special_requirements}</p>
+      ` : ''}
+
+      <div style="margin-top:24px;display:flex;gap:10px">
+        <button class="btn-approve" style="padding:10px 24px;font-size:14px" onclick="updateStatus(${r.id},'approved');closeModalDirect()">✓ Approve</button>
+        <button class="btn-reject"  style="padding:10px 24px;font-size:14px" onclick="updateStatus(${r.id},'rejected');closeModalDirect()">✕ Reject</button>
+      </div>
+    `;
+
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModalDirect();
+  }
+
+  function closeModalDirect() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+
+  // ── UPDATE STATUS ──
+  async function updateStatus(id, status) {
+    try {
+      const res = await fetch(`/registrations/${id}/status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+      const data = await res.json();
+      if (data.success) {
+        const reg = allData.find(r => r.id === id);
+        if (reg) reg.status = status;
+        updateStats();
+        renderTable();
+        showToast(`Registration ${status}`, 'success');
+      } else {
+        showToast(data.message || 'Update failed', 'error');
+      }
+    } catch (e) {
+      showToast('Server error', 'error');
+    }
+  }
+
+  // ── EXPORT CSV ──
+  function exportCSV() {
+    const headers = ['ID','Company','Brand','Email','Phone','Country','City','Industry','Booth Type','Booth Size','Staff','Status','Date'];
+    const rows = allData.map(r => [
+      r.id, r.company_name, r.brand_name, r.email_address,
+      r.phone_number, r.country, r.city, r.industry_sector_raw,
+      r.booth_type_raw, r.booth_size, r.number_of_booth_staff,
+      r.status, r.created_at
+    ].map(v => `"${(v||'').toString().replace(/"/g,'""')}"`));
+
+    const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `wellexpo2026_registrations_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    showToast('CSV exported!', 'success');
+  }
+
+  // ── TOAST ──
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ── FILTERS ──
+  document.querySelectorAll('.filter-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      renderTable();
+    });
+  });
+
+  document.getElementById('search-input').addEventListener('input', e => {
+    searchQuery = e.target.value;
+    renderTable();
+  });
+
+  // ── INIT ──
+  loadRegistrations();
+  setInterval(loadRegistrations, 30000); // refresh every 30s
+</script>
+</body>
+</html>

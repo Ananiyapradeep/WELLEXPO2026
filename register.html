@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exhibitor Registration – Kerala Healthcare Expo 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #1a6b6b;
+    --teal-dark: #14555555;
+    --teal-header: #0f5a5a;
+    --orange: #e8931a;
+    --orange-hover: #d4830f;
+    --bg: #f5f5f5;
+    --card-bg: #ebebeb;
+    --text: #2c2c2c;
+    --label: #333;
+    --border: #ccc;
+    --input-bg: #fff;
+    --radius: 4px;
+  }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--teal-header);
+    padding: 38px 20px 42px;
+    text-align: center;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 24px 60px;
+  }
+
+  /* ── SECTION HEADINGS ── */
+  .section-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 32px 0 14px;
+  }
+  .section-title:first-of-type { margin-top: 0; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card-bg);
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin-bottom: 8px;
+  }
+
+  /* ── GRID ── */
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px 24px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px 24px; }
+  .grid-1 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .span-3 { grid-column: 1 / -1; }
+  .span-2 { grid-column: span 2; }
+
+  @media(max-width: 860px) {
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .grid-3 .col3 { grid-column: 1 / -1; }
+  }
+  @media(max-width: 560px) {
+    .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* ── FORM ELEMENTS ── */
+  label.field-label {
+    display: block;
+    font-size: 0.88rem;
+    color: var(--label);
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color .2s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 2px rgba(26,107,107,.12);
+  }
+  textarea { resize: vertical; min-height: 110px; }
+  select { appearance: auto; }
+
+  /* country field with flag */
+  .country-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .country-wrap:focus-within {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 2px rgba(26,107,107,.12);
+  }
+  .country-flag {
+    padding: 0 10px;
+    font-size: 1.2rem;
+    border-right: 1px solid var(--border);
+    background: #f9f9f9;
+    height: 42px;
+    display: flex; align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    font-size: 0.88rem;
+  }
+  .country-wrap select {
+    border: none;
+    border-radius: 0;
+    padding-left: 10px;
+    box-shadow: none;
+    flex: 1;
+    background: transparent;
+  }
+
+  /* ── RADIO / CHECKBOX ── */
+  .radio-group, .check-group {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 4px;
+  }
+  .radio-group label, .check-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.93rem;
+    cursor: pointer;
+    font-weight: 400;
+    color: var(--text);
+  }
+  input[type="radio"], input[type="checkbox"] {
+    width: 16px; height: 16px;
+    accent-color: var(--teal);
+    cursor: pointer;
+  }
+
+  /* ── FILE INPUT ── */
+  .file-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .file-btn {
+    display: inline-block;
+    padding: 6px 14px;
+    background: var(--input-bg);
+    border: 1px solid #999;
+    border-radius: 3px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background .15s;
+    font-family: inherit;
+  }
+  .file-btn:hover { background: #e8e8e8; }
+  input[type="file"] { display: none; }
+  .file-name {
+    font-size: 0.88rem;
+    color: #666;
+    font-style: italic;
+  }
+
+  /* ── STANDALONE DESCRIPTION ── */
+  .standalone-section {
+    margin-bottom: 4px;
+  }
+  .standalone-section label.field-label {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+
+  /* ── AGREEMENT ── */
+  .agreement-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .agreement-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+
+  /* ── SEND BUTTON ── */
+  .send-btn {
+    margin-top: 28px;
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    padding: 14px 44px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+    font-family: inherit;
+  }
+  .send-btn:hover { background: var(--orange-hover); }
+  .send-btn:active { transform: scale(0.98); }
+  .send-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+  /* ── SCROLL TO TOP ── */
+  #scrollTop {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 48px; height: 48px;
+    background: var(--teal-header);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 12px rgba(0,0,0,.25);
+    transition: background .2s;
+    z-index: 999;
+  }
+  #scrollTop:hover { background: var(--teal); }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed;
+    bottom: 90px;
+    right: 28px;
+    padding: 14px 22px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity .35s, transform .35s;
+    pointer-events: none;
+    max-width: 320px;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+  #toast.success { background: #2e7d32; }
+  #toast.error { background: #c62828; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--teal-header);
+    text-align: center;
+    color: rgba(255,255,255,.85);
+    padding: 22px;
+    font-size: 0.9rem;
+    margin-top: 60px;
+  }
+
+  /* ── REQUIRED STAR ── */
+  .req { color: #c0392b; margin-left: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Exhibitor Registration</h1>
+</header>
+
+<main>
+  <form id="regForm" enctype="multipart/form-data" novalidate>
+
+    <!-- ── Company Information ── -->
+    <div class="card">
+      <div class="grid-3">
+        <div>
+          <label class="field-label" for="company_name">Company Name<span class="req">*</span></label>
+          <input type="text" id="company_name" name="company_name" required>
+        </div>
+        <div>
+          <label class="field-label" for="brand_name">Brand Name (if different)</label>
+          <input type="text" id="brand_name" name="brand_name">
+        </div>
+        <div>
+          <label class="field-label" for="company_website">Company Website</label>
+          <input type="url" id="company_website" name="company_website" placeholder="https://">
+        </div>
+        <div>
+          <label class="field-label" for="industry_sector">Industry / Sector</label>
+          <input type="text" id="industry_sector" name="industry_sector">
+        </div>
+        <div>
+          <label class="field-label" for="year_established">Year Established</label>
+          <input type="date" id="year_established" name="year_established">
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Company Description ── -->
+    <div class="standalone-section" style="margin-top:28px;">
+      <label class="field-label" for="company_description">Company Description (Short Profile)</label>
+      <textarea id="company_description" name="company_description" rows="4"></textarea>
+    </div>
+
+    <!-- ── Contact Person Details ── -->
+    <h2 class="section-title">Contact Person Details</h2>
+    <div class="card">
+      <div class="grid-3">
+        <div>
+          <label class="field-label" for="contact_person_name">Contact Person Name<span class="req">*</span></label>
+          <input type="text" id="contact_person_name" name="contact_person_name" required>
+        </div>
+        <div>
+          <label class="field-label" for="email_address">Email Address<span class="req">*</span></label>
+          <input type="email" id="email_address" name="email_address" required>
+        </div>
+        <div>
+          <label class="field-label" for="phone_number">Phone Number</label>
+          <input type="tel" id="phone_number" name="phone_number">
+        </div>
+        <div>
+          <label class="field-label" for="whatsapp_number">WhatsApp Number</label>
+          <input type="tel" id="whatsapp_number" name="whatsapp_number">
+        </div>
+        <div>
+          <label class="field-label">Country</label>
+          <div class="country-wrap">
+            <span class="country-flag">🇮🇳 ▾</span>
+            <select name="country" id="country">
+              <option value="India (भारत)" selected>India (भारत)</option>
+              <option value="United States">United States</option>
+              <option value="United Kingdom">United Kingdom</option>
+              <option value="United Arab Emirates">United Arab Emirates</option>
+              <option value="Saudi Arabia">Saudi Arabia</option>
+              <option value="Singapore">Singapore</option>
+              <option value="Germany">Germany</option>
+              <option value="France">France</option>
+              <option value="Japan">Japan</option>
+              <option value="China">China</option>
+              <option value="Australia">Australia</option>
+              <option value="Canada">Canada</option>
+              <option value="Malaysia">Malaysia</option>
+              <option value="Sri Lanka">Sri Lanka</option>
+              <option value="Bangladesh">Bangladesh</option>
+              <option value="Nepal">Nepal</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="field-label" for="city">City</label>
+          <input type="text" id="city" name="city">
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Exhibition Participation Details ── -->
+    <h2 class="section-title">Exhibition Participation Details</h2>
+    <div class="card">
+      <div class="grid-3" style="margin-bottom:20px;">
+        <div>
+          <label class="field-label" for="exhibition_name">Exhibition Name</label>
+          <input type="text" id="exhibition_name" name="exhibition_name">
+        </div>
+        <div>
+          <label class="field-label" for="product_service_category">Product / Service Category</label>
+          <input type="text" id="product_service_category" name="product_service_category">
+        </div>
+        <div>
+          <label class="field-label" for="target_market">Target Market / Audience</label>
+          <input type="text" id="target_market" name="target_market">
+        </div>
+      </div>
+      <div>
+        <label class="field-label">WPrevious Exhibition Experience</label>
+        <div class="radio-group">
+          <label><input type="radio" name="previous_exhibition_experience" value="Yes"> Yes</label>
+          <label><input type="radio" name="previous_exhibition_experience" value="No"> No</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Booth Requirements ── -->
+    <h2 class="section-title">Booth Requirements</h2>
+    <div class="card">
+      <div class="grid-3" style="margin-bottom:20px;">
+        <div>
+          <label class="field-label" for="booth_type">Booth Type</label>
+          <select id="booth_type" name="booth_type">
+            <option value="Shell Scheme">Shell Scheme</option>
+            <option value="Space Only">Space Only</option>
+            <option value="Custom Build">Custom Build</option>
+            <option value="Island Booth">Island Booth</option>
+            <option value="Corner Booth">Corner Booth</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="booth_size">Booth Size (sqm)</label>
+          <input type="text" id="booth_size" name="booth_size">
+        </div>
+        <div>
+          <label class="field-label" for="number_of_booth_staff">Number of Booth Staff</label>
+          <input type="number" id="number_of_booth_staff" name="number_of_booth_staff" min="1">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label class="field-label">Power Requirement</label>
+          <div class="radio-group">
+            <label><input type="radio" name="power_requirement" value="Yes"> Yes</label>
+            <label><input type="radio" name="power_requirement" value="No"> No</label>
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Internet Requirement</label>
+          <div class="radio-group">
+            <label><input type="radio" name="internet_requirement" value="Yes"> Yes</label>
+            <label><input type="radio" name="internet_requirement" value="No"> No</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Marketing & Promotion ── -->
+    <h2 class="section-title">Marketing &amp; Promotion</h2>
+    <div class="card">
+      <div class="grid-3">
+        <div>
+          <label class="field-label">Interested in Sponsorship Opportunities</label>
+          <div class="radio-group">
+            <label><input type="radio" name="interested_sponsorship" value="Yes"> Yes</label>
+            <label><input type="radio" name="interested_sponsorship" value="No"> No</label>
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Interested in Speaking Opportunities</label>
+          <div class="radio-group">
+            <label><input type="radio" name="interested_speaking" value="Yes"> Yes</label>
+            <label><input type="radio" name="interested_speaking" value="No"> No</label>
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Interested in Product Launch / Demo</label>
+          <div class="radio-group">
+            <label><input type="radio" name="interested_product_launch" value="Yes"> Yes</label>
+            <label><input type="radio" name="interested_product_launch" value="No"> No</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Documents Upload ── -->
+    <h2 class="section-title">Documents Upload</h2>
+    <div class="card">
+      <div class="grid-3" style="margin-bottom:20px;">
+        <div>
+          <label class="field-label">Company Logo</label>
+          <div class="file-wrap">
+            <button type="button" class="file-btn" onclick="document.getElementById('company_logo').click()">Choose File</button>
+            <span class="file-name" id="company_logo_name">No file chosen</span>
+          </div>
+          <input type="file" id="company_logo" name="company_logo" accept="image/*" onchange="updateFileName(this,'company_logo_name')">
+        </div>
+        <div>
+          <label class="field-label">Product Images</label>
+          <div class="file-wrap">
+            <button type="button" class="file-btn" onclick="document.getElementById('product_images').click()">Choose File</button>
+            <span class="file-name" id="product_images_name">No file chosen</span>
+          </div>
+          <input type="file" id="product_images" name="product_images" accept="image/*" multiple onchange="updateFileName(this,'product_images_name')">
+        </div>
+        <div>
+          <label class="field-label">Company Profile / Brochure</label>
+          <div class="file-wrap">
+            <button type="button" class="file-btn" onclick="document.getElementById('company_profile').click()">Choose File</button>
+            <span class="file-name" id="company_profile_name">No file chosen</span>
+          </div>
+          <input type="file" id="company_profile" name="company_profile" accept=".pdf,.doc,.docx" onchange="updateFileName(this,'company_profile_name')">
+        </div>
+      </div>
+      <div>
+        <label class="field-label">Business Registration Certificate</label>
+        <div class="file-wrap">
+          <button type="button" class="file-btn" onclick="document.getElementById('business_registration').click()">Choose File</button>
+          <span class="file-name" id="business_registration_name">No file chosen</span>
+        </div>
+        <input type="file" id="business_registration" name="business_registration" accept=".pdf,.jpg,.png" onchange="updateFileName(this,'business_registration_name')">
+      </div>
+    </div>
+
+    <!-- ── Additional Information ── -->
+    <h2 class="section-title">Additional Information</h2>
+    <div class="standalone-section">
+      <label class="field-label" for="special_requirements">Special Requirements</label>
+      <textarea id="special_requirements" name="special_requirements" rows="4"></textarea>
+    </div>
+
+    <!-- ── Agreement Section ── -->
+    <h2 class="section-title">Agreement Section</h2>
+    <div class="card">
+      <div class="agreement-group">
+        <label>
+          <input type="checkbox" name="terms_conditions" value="agreed" id="terms_conditions">
+          Terms &amp; Conditions
+        </label>
+        <label>
+          <input type="checkbox" name="consent_marketing" value="agreed" id="consent_marketing">
+          Consent for Marketing Communication
+        </label>
+      </div>
+    </div>
+
+    <button type="submit" class="send-btn" id="sendBtn">SEND</button>
+
+  </form>
+</main>
+
+<footer>&copy; 2026 Kerala Healthcare Expo. All rights reserved.</footer>
+
+<button id="scrollTop" title="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div id="toast"></div>
+
+<script>
+  function updateFileName(input, spanId) {
+    const span = document.getElementById(spanId);
+    if (input.files && input.files.length > 0) {
+      span.textContent = input.files.length > 1
+        ? input.files.length + ' files selected'
+        : input.files[0].name;
+    } else {
+      span.textContent = 'No file chosen';
+    }
+  }
+
+  function showToast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show ' + type;
+    setTimeout(() => { t.className = ''; }, 4000);
+  }
+
+  document.getElementById('regForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Basic validation
+    const required = this.querySelectorAll('[required]');
+    let valid = true;
+    required.forEach(el => {
+      el.style.borderColor = '';
+      if (!el.value.trim()) {
+        el.style.borderColor = '#c0392b';
+        valid = false;
+      }
+    });
+    if (!valid) {
+      showToast('Please fill in all required fields.', 'error');
+      return;
+    }
+    if (!document.getElementById('terms_conditions').checked) {
+      showToast('Please agree to the Terms & Conditions.', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('sendBtn');
+    btn.disabled = true;
+    btn.textContent = 'SUBMITTING...';
+
+    const formData = new FormData(this);
+
+    try {
+      const res = await fetch('/submit', { method: 'POST', body: formData });
+      const json = await res.json();
+      if (json.success) {
+        showToast('✓ Registration submitted successfully!', 'success');
+        this.reset();
+        document.querySelectorAll('.file-name').forEach(s => s.textContent = 'No file chosen');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        showToast('Error: ' + json.message, 'error');
+      }
+    } catch(err) {
+      showToast('Network error. Is the server running?', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'SEND';
+    }
+  });
+
+  // Scroll-to-top visibility
+  window.addEventListener('scroll', () => {
+    document.getElementById('scrollTop').style.opacity = window.scrollY > 200 ? '1' : '0.4';
+  });
+</script>
+</body>
+</html>
