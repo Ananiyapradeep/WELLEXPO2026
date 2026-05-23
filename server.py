@@ -288,3 +288,97 @@ if __name__ == "__main__":
     get_db()
     print("Database connected!")
     app.run(debug=False, port=5000)
+
+
+
+@app.route("/visitor-register.html")
+def visitor_register():
+    return send_from_directory(".", "visitor-register.html")
+
+@app.route("/contact.html")
+def contact():
+    return send_from_directory(".", "contact.html")
+
+@app.route("/visitor-submit", methods=["POST"])
+def visitor_submit():
+    try:
+        data = request.form.to_dict()
+        ts = now_iso()
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS visitor_registrations (
+                id SERIAL PRIMARY KEY,
+                full_name TEXT, email TEXT, phone TEXT, whatsapp TEXT,
+                country TEXT, city TEXT, job_title TEXT, organisation TEXT,
+                industry_sector TEXT, days_attending TEXT, interests TEXT,
+                terms TEXT, marketing TEXT,
+                status TEXT DEFAULT 'registered',
+                created_at TEXT
+            )
+        """)
+        cur.execute("""
+            INSERT INTO visitor_registrations
+              (full_name, email, phone, whatsapp, country, city,
+               job_title, organisation, industry_sector, days_attending,
+               interests, terms, marketing, created_at)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        """, (
+            data.get("full_name",""), data.get("email",""),
+            data.get("phone",""), data.get("whatsapp",""),
+            data.get("country",""), data.get("city",""),
+            data.get("job_title",""), data.get("organisation",""),
+            data.get("industry_sector",""), data.get("days_attending",""),
+            data.get("interests",""), data.get("terms",""),
+            data.get("marketing",""), ts
+        ))
+        conn.commit()
+        cur.close()
+        return jsonify({"success": True, "message": "Visitor registration successful!"})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@app.route("/contact-submit", methods=["POST"])
+def contact_submit():
+    try:
+        data = request.form.to_dict()
+        ts = now_iso()
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS contact_enquiries (
+                id SERIAL PRIMARY KEY,
+                name TEXT, email TEXT, phone TEXT,
+                enquiry_type TEXT, message TEXT,
+                created_at TEXT
+            )
+        """)
+        cur.execute("""
+            INSERT INTO contact_enquiries
+              (name, email, phone, enquiry_type, message, created_at)
+            VALUES (%s,%s,%s,%s,%s,%s)
+        """, (
+            data.get("name",""), data.get("email",""),
+            data.get("phone",""), data.get("enquiry_type",""),
+            data.get("message",""), ts
+        ))
+        conn.commit()
+        cur.close()
+        return jsonify({"success": True, "message": "Message sent successfully!"})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@app.route("/visitors")
+def list_visitors():
+    conn = get_db()
+    rows = fetch_all(conn, "SELECT * FROM visitor_registrations ORDER BY created_at DESC")
+    return jsonify(rows)
+
+
+@app.route("/enquiries")
+def list_enquiries():
+    conn = get_db()
+    rows = fetch_all(conn, "SELECT * FROM contact_enquiries ORDER BY created_at DESC")
+    return jsonify(rows)
