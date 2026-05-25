@@ -1,4 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import os
 import json
 import psycopg2
@@ -8,10 +11,88 @@ from datetime import datetime, timezone
 app = Flask(__name__, static_folder=".")
 
 # ── DATABASE ──────────────────────────────────────────────────
+# ── EMAIL CONFIG ─────────────────────────────────────────────
+SMTP_HOST     = "smtp.zoho.in"
+SMTP_PORT     = 587
+SMTP_USER     = "exhibitors@wellexpo.in"
+SMTP_PASSWORD = "Theshows@wildeye1"
+FROM_EMAIL    = "WELLExpo <exhibitors@wellexpo.in>"
+
 DATABASE_URL = "postgresql://postgres.hnnmtgclwufluuzcypgg:Wellexpo2026@aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require&connect_timeout=10"
 
 # Single persistent connection
 _conn = None
+
+def send_confirmation_email(to_email, name, reg_type, reg_id):
+    try:
+        prefix  = "EXH" if reg_type == "exhibitor" else "VIS"
+        full_id = f"{prefix}-{str(reg_id).zfill(4)}"
+
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = f"WELLEXPO 2026 — Registration Confirmed ({full_id})"
+        msg["From"]    = FROM_EMAIL
+        msg["To"]      = to_email
+
+        html = f"""
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#060E1E;color:#F5F0E8;border-radius:16px;overflow:hidden;">
+          <div style="background:linear-gradient(135deg,#0D1A31,#162240);padding:40px;text-align:center;border-bottom:2px solid rgba(201,168,76,0.3);">
+            <div style="font-size:32px;font-weight:bold;letter-spacing:4px;color:#F5F0E8;">WELL<span style="color:#C9A84C;">EXPO</span></div>
+            <div style="font-size:13px;color:#8892A4;margin-top:6px;letter-spacing:2px;">KERALA HEALTHCARE EXPO 2026</div>
+          </div>
+          <div style="padding:40px;">
+            <h2 style="color:#C9A84C;font-size:24px;margin-bottom:16px;">Registration Confirmed!</h2>
+            <p style="color:#F5F0E8;font-size:15px;line-height:1.6;">Dear <strong>{name}</strong>,</p>
+            <p style="color:#8892A4;font-size:14px;line-height:1.6;margin-top:12px;">
+              Thank you for registering for <strong style="color:#F5F0E8;">WELLEXPO 2026</strong>. 
+              Your registration has been received and is currently under review.
+            </p>
+            <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:24px;margin:28px 0;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                <span style="color:#8892A4;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Registration ID</span>
+                <span style="color:#C9A84C;font-weight:bold;font-size:16px;">{full_id}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                <span style="color:#8892A4;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Type</span>
+                <span style="color:#F5F0E8;">{reg_type.capitalize()}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                <span style="color:#8892A4;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Event</span>
+                <span style="color:#F5F0E8;">WellExpo Kerala 2026</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                <span style="color:#8892A4;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Dates</span>
+                <span style="color:#F5F0E8;">October 7, 8 & 9, 2026</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:#8892A4;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Venue</span>
+                <span style="color:#F5F0E8;">KINFRA Exhibition Centre, Kochi</span>
+              </div>
+            </div>
+            <p style="color:#8892A4;font-size:13px;line-height:1.6;">
+              Our team will review your registration and get back to you shortly. 
+              For any queries, contact us at 
+              <a href="mailto:exhibitors@wellexpo.in" style="color:#C9A84C;">exhibitors@wellexpo.in</a>
+            </p>
+          </div>
+          <div style="background:rgba(0,0,0,0.3);padding:20px;text-align:center;border-top:1px solid rgba(255,255,255,0.05);">
+            <p style="color:#8892A4;font-size:12px;margin:0;">© 2026 WellExpo Kerala · Organised by The Shows by Wildeye</p>
+          </div>
+        </div>
+        """
+
+        msg.attach(MIMEText(html, "html"))
+
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SMTP_USER, SMTP_PASSWORD)
+            server.sendmail(SMTP_USER, to_email, msg.as_string())
+
+        print(f"Email sent to {to_email}")
+        return True
+    except Exception as e:
+        print(f"Email error: {e}")
+        return False
+
 
 def get_db():
     global _conn
@@ -210,6 +291,14 @@ def submit():
               json.dumps({"company_name": data.get("company_name")})))
 
         conn.commit()
+
+        # Send confirmation email
+        send_confirmation_email(
+            data.get("email_address", ""),
+            data.get("contact_person_name", ""),
+            "exhibitor",
+            reg_id
+        )
 
         # Build ticket URL
         from urllib.parse import quote
