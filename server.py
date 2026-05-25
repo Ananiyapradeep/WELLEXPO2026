@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 import smtplib
+import threading
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os
@@ -16,7 +17,7 @@ SMTP_HOST     = "smtp.zoho.in"
 SMTP_PORT     = 587
 SMTP_USER     = "exhibitors@wellexpo.in"
 SMTP_PASSWORD = "Theshows@wildeye1"
-FROM_EMAIL    = "WELLExpo <exhibitors@wellexpo.in>"
+FROM_EMAIL    = "Kerala Expo <exhibitors@wellexpo.in>"
 
 DATABASE_URL = "postgresql://postgres.hnnmtgclwufluuzcypgg:Wellexpo2026@aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require&connect_timeout=10"
 
@@ -82,7 +83,7 @@ def send_confirmation_email(to_email, name, reg_type, reg_id):
 
         msg.attach(MIMEText(html, "html"))
 
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as server:
             server.starttls()
             server.login(SMTP_USER, SMTP_PASSWORD)
             server.sendmail(SMTP_USER, to_email, msg.as_string())
@@ -292,14 +293,6 @@ def submit():
 
         conn.commit()
 
-        # Send confirmation email
-        send_confirmation_email(
-            data.get("email_address", ""),
-            data.get("contact_person_name", ""),
-            "exhibitor",
-            reg_id
-        )
-
         # Build ticket URL
         from urllib.parse import quote
         contact_name = quote(data.get("contact_person_name", ""))
@@ -308,6 +301,15 @@ def submit():
         phone_num    = quote(data.get("phone_number", ""))
         country_val  = quote(data.get("country", ""))
         ticket_url = f"/ticket.html?type=exhibitor&id={reg_id}&name={contact_name}&company={company_name}&email={email_addr}&phone={phone_num}&country={country_val}"
+
+        # Send email in background after response
+        email_addr   = data.get("email_address", "")
+        contact_name = data.get("contact_person_name", "")
+        threading.Thread(
+            target=send_confirmation_email,
+            args=(email_addr, contact_name, "exhibitor", reg_id),
+            daemon=True
+        ).start()
 
         return jsonify({
             "success": True,
